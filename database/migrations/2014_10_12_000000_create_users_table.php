@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->integer('age');
+            $table->integer('weight');
+            $table->integer('height');
+            $table->string('sex');
         });
     }
 
