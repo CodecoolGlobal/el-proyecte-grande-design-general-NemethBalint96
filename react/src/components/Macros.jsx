@@ -1,7 +1,7 @@
 import PieChart from "../components/PieChart.jsx";
 import ProgressBar from "./ProgressBar.jsx";
 import React, { useState } from 'react';
-
+import MealPlan from "./MealPlan.jsx";
 
 
 export default function Macros() {
@@ -49,6 +49,12 @@ export default function Macros() {
           <p className="text-sm font-medium text-gray-500">Total Carbs</p>
           <p className="text-sm font-medium text-gray-700">476g</p>
         </div>
+    </div>
+    <div className="w-1/2 pb-5 pt-5">
+      <h1>Generate Meal Plan</h1>
+    </div>
+    <div>
+      <MealPlan />
     </div>
   </>
   )
