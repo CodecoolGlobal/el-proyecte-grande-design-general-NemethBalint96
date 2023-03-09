@@ -13,7 +13,7 @@ const MealPlan = () => {
 
     const getMealData = () => {
         fetch(
-            `https://api.spoonacular.com/mealplanner/generate?apiKey=f63d05dd7cc444c387f1c3591f9bd37f&timeFrame=day&targetCalories=${calories}`
+            `https://api.spoonacular.com/mealplanner/generate?apiKey=16addf5f22ac44288c1e95e242aa584d&timeFrame=day&targetCalories=${calories}`
         )
         .then((response) => response.json())
         .then((data) => {
