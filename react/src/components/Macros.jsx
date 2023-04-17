@@ -2,7 +2,7 @@ import PieChart from "../components/PieChart.jsx";
 import ProgressBar from "./ProgressBar.jsx";
 import React, { useState } from 'react';
 import MealPlan from "./MealPlan.jsx";
-import SearchBar from "./SearchBar.jsx";
+import AddModal from "./AddModal.jsx";
 
 export default function Macros() {
   const proteinGoal = 50;
@@ -18,13 +18,20 @@ export default function Macros() {
     "totalCarbs": 0,
     "fiber": 0,
   });
+  const [open, setOpen] = useState(false);
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
 
+  const toggleModal = () => {
+    setOpen(!open);
+  }
+
   return (
     <>
+      <button onClick={toggleModal}>Add Ingredients</button>
+      <AddModal open={open} toggleModal={toggleModal} actual={actual} setActual={setActual} />
       <div className="flex">
         <div className="w-1/2 h-96 bg-cover bg-center">
           <h1>My Macros</h1>
@@ -62,8 +69,6 @@ export default function Macros() {
           <p className="text-sm font-medium text-gray-700">{actual.totalCarbs.toFixed(0)}g</p>
         </div>
     </div>
-
-    <SearchBar actual={actual} setActual={setActual} />
 
     <div className="w-1/2 pb-5 pt-5">
       <h1>Generate Meal Plan</h1>

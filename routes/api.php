@@ -32,9 +32,14 @@ Route::get('/suggestions', function (Illuminate\Http\Request $request) {
 
     $query = $request->query('q');
     $suggestions = [];
+    $count = 0;
     foreach ($suggestionsData as $suggestion) {
+        if ($count === 10) {
+            break;
+        }
         if (str_starts_with(strtolower($suggestion->name), strtolower($query))) {
             $suggestions[] = $suggestion;
+            $count++;
         }
     }
 
