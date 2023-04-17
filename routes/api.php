@@ -26,7 +26,7 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/suggestions', function (Illuminate\Http\Request $request) {
-    $suggestionsFile = storage_path('app/ingredients.json');
+    $suggestionsFile = storage_path('app/public/ingredients.json');
     $suggestionsJson = file_get_contents($suggestionsFile);
     $suggestionsData = json_decode($suggestionsJson);
 
