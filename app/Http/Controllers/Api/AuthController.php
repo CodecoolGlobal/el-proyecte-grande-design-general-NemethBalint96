@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+
+    public function index()
+    {
+        $user = auth()->user();
+        return response(compact('user'));
+    }
+
     public function signup(SignupRequest $request)
     {
         /** @var \App\Models\User $user */
