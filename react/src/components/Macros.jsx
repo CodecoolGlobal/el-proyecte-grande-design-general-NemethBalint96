@@ -17,7 +17,8 @@ export default function Macros() {
         const sex = data.sex;
 
         if (sex === "male"){
-          const calorie = 66 + (13.7 * weight) + (5 * height) - (6.8 * age);
+          const calorie = Math.round(66 + (13.7 * weight) + (5 * height) - (6.8 * age));
+          
           setCalorie(calorie);
         }
 
