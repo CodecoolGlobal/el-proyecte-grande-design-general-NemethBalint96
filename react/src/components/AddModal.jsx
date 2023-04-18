@@ -1,18 +1,24 @@
 import SearchBar from "./SearchBar.jsx";
 import React, {useEffect, useState} from "react";
+import PieChart from "./PieChart.jsx";
 
 export default function AddModal({ open, toggleModal, actual, setActual }) {
   if (!open) return null;
-
+  const [first, setFirst] = useState(true);
+  const [amountReference, setAmountReference] = useState();
   const [ingredient, setIngredient] = useState();
   const [title, setTitle] = useState('Search for an ingredient');
+  const [amount, setAmount] = useState(100);
 
   useEffect(() => {
-    if (ingredient) {
-      let title = ingredient.name.charAt(0).toUpperCase() + ingredient.name.slice(1);
-      setTitle(title);
+    if (!ingredient) return;
+    if (first) {
+      setFirst(false);
+      setAmountReference({...ingredient});
     }
-  }, [ingredient])
+    let title = ingredient.name.charAt(0).toUpperCase() + ingredient.name.slice(1);
+    setTitle(title);
+  }, [ingredient]);
 
   const addIngredient = () => {
     let nutrients = ingredient.nutrition.nutrients;
@@ -23,16 +29,26 @@ export default function AddModal({ open, toggleModal, actual, setActual }) {
     let tc = nutrients.find(nutrient => nutrient.name === "Carbohydrates").amount;
     let fi = nutrients.find(nutrient => nutrient.name === "Fiber").amount;
     let data = {
-      "protein": actual.protein + p,
-      "fat": actual.fat + f,
-      "netCarbs": actual.netCarbs + nc,
-      "cals": actual.cals + k,
-      "totalCarbs": actual.totalCarbs + tc,
-      "fiber": actual.fiber + fi,
+      "protein": actual.protein + changeAmount(p),
+      "fat": actual.fat + changeAmount(f),
+      "netCarbs": actual.netCarbs + changeAmount(nc),
+      "cals": actual.cals + changeAmount(k),
+      "totalCarbs": actual.totalCarbs + changeAmount(tc),
+      "fiber": actual.fiber + changeAmount(fi),
     };
     setActual(data);
     setIngredient(null);
     toggleModal();
+  }
+
+  const changeAmount = (value) => {
+    let change = amountReference.amount / amount;
+    return value / change;
+  }
+
+  const changeIngredientAmount = (e) => {
+    let value = e.target.value < 1 ? 1 : e.target.value;
+    setAmount(value);
   }
 
   return (
@@ -42,8 +58,7 @@ export default function AddModal({ open, toggleModal, actual, setActual }) {
           <div className={"bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4"}>
             <div className={"sm:flex sm:items-start"}>
               <div className={"mx-auto flex h-12 w-12  items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10"}>
-                {ingredient ? <img src={"https://spoonacular.com/cdn/ingredients_100x100/" + ingredient.image}
-                      alt={ingredient.name}></img> : null}
+                {ingredient ? <img src={"https://spoonacular.com/cdn/ingredients_100x100/" + ingredient.image} alt={ingredient.name}></img> : null}
               </div>
               <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                 <div className={"text-base font-semibold leading-6 text-gray-900"}>
@@ -51,7 +66,14 @@ export default function AddModal({ open, toggleModal, actual, setActual }) {
                 </div>
                 <div className="mt-2">
                   <div className="text-sm text-gray-500">
-                    {ingredient ? null : <SearchBar setIngredient={setIngredient}/>}
+                    {ingredient ?
+                      <>
+                        <input className={"w-auto mr-2"} type="number" value={amount} min={1} onChange={(e) => changeIngredientAmount(e)}></input>g
+                        <PieChart protein={ingredient.nutrition.caloricBreakdown.percentProtein} fat={ingredient.nutrition.caloricBreakdown.percentFat} carbs={ingredient.nutrition.caloricBreakdown.percentCarbs} />
+                      </>
+                      :
+                      <SearchBar setIngredient={setIngredient}/>
+                    }
                   </div>
                 </div>
               </div>
