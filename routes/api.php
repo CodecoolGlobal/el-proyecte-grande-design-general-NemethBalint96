@@ -25,3 +25,23 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/suggestions', function (Illuminate\Http\Request $request) {
+    $suggestionsFile = storage_path('app/public/ingredients.json');
+    $suggestionsJson = file_get_contents($suggestionsFile);
+    $suggestionsData = json_decode($suggestionsJson);
+
+    $query = $request->query('q');
+    $suggestions = [];
+    $count = 0;
+    foreach ($suggestionsData as $suggestion) {
+        if ($count === 10) {
+            break;
+        }
+        if (str_starts_with(strtolower($suggestion->name), strtolower($query))) {
+            $suggestions[] = $suggestion;
+            $count++;
+        }
+    }
+
+    return response()->json($suggestions);
+});
