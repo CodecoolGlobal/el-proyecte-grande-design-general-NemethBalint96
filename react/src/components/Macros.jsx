@@ -1,14 +1,44 @@
 import PieChart from "../components/PieChart.jsx";
 import ProgressBar from "./ProgressBar.jsx";
-import React, { useState } from 'react';
+import React, { useEffect, useState, useStateContext} from 'react';
 import MealPlan from "./MealPlan.jsx";
 import AddModal from "./AddModal.jsx";
+import axios from "axios";
+import axiosClient from "../axios-client.js";
 
 export default function Macros() {
+  const [calorie, setCalorie] = useState(2000);
+  useState( () => {
+    axiosClient.get('/user')
+      .then(({data}) => {
+        const height = data.height;
+        const weight = data.weight;
+        const age = data.age;
+        const sex = data.sex;
+
+        if (sex === "male"){
+          const calorie = 66 + (13.7 * weight) + (5 * height) - (6.8 * age);
+          setCalorie(calorie);
+        }
+
+      })
+  })
+
+  /*const getUser = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/user');
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const user = getUser();*/
+
+  console.log(calorie);
   const proteinGoal = 50;
   const fatGoal = 65;
   const carbsGoal = 275;
-  const calsGoal = 2000;
+  
   const [selectedOption, setSelectedOption] = useState('Actual');
   const [actual, setActual] = useState({
     "protein": 0,
@@ -27,6 +57,8 @@ export default function Macros() {
   const toggleModal = () => {
     setOpen(!open);
   }
+
+  
 
   return (
     <>
@@ -54,7 +86,7 @@ export default function Macros() {
 
           <ProgressBar name='Protein' color='blue' data={actual.protein} sum={proteinGoal} />
           <ProgressBar name='Fat' color='yellow' data={actual.fat} sum={fatGoal} />
-          <ProgressBar name='Cals' color='slate' data={actual.cals} sum={calsGoal} unit={''} />
+          <ProgressBar name='Cals' color='slate' data={actual.cals} sum={calorie} unit={''} />
         </div>
 
       </div>
