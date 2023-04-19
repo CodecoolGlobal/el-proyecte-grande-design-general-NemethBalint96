@@ -31,6 +31,7 @@ class AuthController extends Controller
             'height' => $data['height'],
             'weight' => $data['weight'],
             'sex' => $data['sex'],
+            'gain_or_lose' => $data['gain_or_lose'],
         ]);
 
         $token = $user->createToken('main')->plainTextToken;
