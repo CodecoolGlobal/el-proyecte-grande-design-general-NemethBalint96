@@ -14,7 +14,9 @@ export default function Signup() {
   const sexRef = useRef();
 
   const [errors, setErrors] = useState(null);
-  const {setUser, setToken} = useStateContext()
+  const {setUser, setToken} = useStateContext();
+  const [sexSelect, setSexSelect] = useState();
+  const [goalSelect, setGoalSelect] = useState();
 
   const onSubmit = (ev) => {
     ev.preventDefault()
@@ -26,7 +28,8 @@ export default function Signup() {
       age: ageRef.current.value,
       weight: weightRef.current.value,
       height: heightRef.current.value,
-      sex: sexRef.current.value,
+      sex: sexSelect,
+      gain_or_lose: goalSelect,
       
     }
     axiosClient.post('/signup', payload)
@@ -58,10 +61,16 @@ export default function Signup() {
           <input ref={ageRef} type="number" placeholder="Age" />
           <input ref={heightRef} type="number" placeholder="Height in cm" />
           <input ref={weightRef} type="number" placeholder="Weight in kg" />
-          <select name="sexes" id="sexes" placeholder="Sex">
-            <option ref={sexRef} value="male">Male</option>
-            <option ref={sexRef} value="male">Female</option>
-            <option ref={sexRef} value="male">Other</option>
+          <h1>{sexSelect}</h1>
+          <select name="sexes" id="sexes" value={sexSelect} onChange={(e) => setSexSelect(e.target.value)}>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+          <select name="gain_or_lose" id="gain_or_lose" value={goalSelect} onChange={(e) => setGoalSelect(e.target.value)}>
+            <option value="gain">Gain weight</option>
+            <option value="lose">Lose weight</option>
+            <option value="keep">Keep weight</option>
           </select>
           <button className="btn btn-block">Signup</button>
           <p className="message">
