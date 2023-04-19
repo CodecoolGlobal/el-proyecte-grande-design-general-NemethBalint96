@@ -8,6 +8,33 @@ import axiosClient from "../axios-client.js";
 
 export default function Macros() {
   const [calorie, setCalorie] = useState(2000);
+
+  const maleCalculation = (goal, weight, height, age) => {
+    if (goal === "keep"){
+      var calorie = Math.round(1.375 * (66 + (13.7 * weight) + (5 * height) - (6.8 * age)));
+    }
+    else if (goal === "lose"){
+      calorie = Math.round(1.375 * (66 + (13.7 * weight) + (5 * height) - (6.8 * age))) - 450;
+    }
+    else{
+      calorie = Math.round(1.375 * (66 + (13.7 * weight) + (5 * height) - (6.8 * age))) + 500;
+    }
+    return calorie;
+  }
+
+  const femaleCalculation = (goal, weight, height, age) => {
+    if (goal === "keep"){
+      var calorie = Math.round(1.375 * (655 + (9.6 * weight) + (1.8 * height) - (4.7 * age)));
+    }
+    else if (goal === "lose"){
+      calorie = Math.round(1.375 * (655 + (9.6 * weight) + (1.8 * height) - (4.7 * age))) - 450;
+    }
+    else{
+      calorie = Math.round(1.375 * (655 + (9.6 * weight) + (1.8 * height) - (4.7 * age))) + 500;
+    }
+    return calorie;
+  }
+
   useState( () => {
     axiosClient.get('/user')
       .then(({data}) => {
@@ -15,13 +42,18 @@ export default function Macros() {
         const weight = data.weight;
         const age = data.age;
         const sex = data.sex;
-
+        const goal = data.gain_or_lose;
         if (sex === "male"){
-          const calorie = Math.round(66 + (13.7 * weight) + (5 * height) - (6.8 * age));
-          
-          setCalorie(calorie);
+          var calorie = maleCalculation(goal, weight, height, age);
+        }
+        else if (sex === "female"){
+          calorie = femaleCalculation(goal, weight, height, age);
+        }
+        else if (sex === "other"){
+          calorie = maleCalculation(goal, weight, height, age);
         }
 
+        setCalorie(calorie);
       })
   })
 
