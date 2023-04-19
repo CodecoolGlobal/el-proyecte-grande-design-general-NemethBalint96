@@ -25,6 +25,7 @@ class User extends Authenticatable
         'weight',
         'height',
         'sex',
+        'gain_or_lose',
     ];
 
     /**
