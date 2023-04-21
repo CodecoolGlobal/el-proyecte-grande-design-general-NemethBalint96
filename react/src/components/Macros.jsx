@@ -1,9 +1,7 @@
-import PieChart from "../components/PieChart.jsx";
-import ProgressBar from "./ProgressBar.jsx";
-import React, { useEffect, useState, useStateContext} from 'react';
+import React, { useState } from 'react';
 import MealPlan from "./MealPlan.jsx";
 import AddModal from "./AddModal.jsx";
-import axios from "axios";
+import Charts from "./Charts.jsx";
 import axiosClient from "../axios-client.js";
 
 export default function Macros() {
@@ -60,6 +58,12 @@ export default function Macros() {
   const proteinGoal = 50;
   const fatGoal = 65;
   const carbsGoal = 275;
+  const goal = {
+    "protein": proteinGoal,
+    "fat": fatGoal,
+    "carbs": carbsGoal,
+    "cals": calorie,
+  }
   const [selectedOption, setSelectedOption] = useState('Actual');
   const [actual, setActual] = useState({
     "protein": 0,
@@ -77,9 +81,7 @@ export default function Macros() {
 
   const toggleModal = () => {
     setOpen(!open);
-  }
-
-  
+  };
 
   return (
     <>
@@ -110,5 +112,5 @@ export default function Macros() {
         <MealPlan />
       </div>
     </>
-  )
+  );
 }

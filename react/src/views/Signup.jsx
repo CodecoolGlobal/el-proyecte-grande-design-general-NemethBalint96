@@ -11,7 +11,6 @@ export default function Signup() {
   const ageRef = useRef();
   const weightRef = useRef();
   const heightRef = useRef();
-  const sexRef = useRef();
 
   const [errors, setErrors] = useState(null);
   const {setUser, setToken} = useStateContext();
@@ -30,7 +29,6 @@ export default function Signup() {
       height: heightRef.current.value,
       sex: sexSelect,
       gain_or_lose: goalSelect,
-      
     }
     axiosClient.post('/signup', payload)
       .then(({data}) => {
@@ -61,13 +59,14 @@ export default function Signup() {
           <input ref={ageRef} type="number" placeholder="Age" />
           <input ref={heightRef} type="number" placeholder="Height in cm" />
           <input ref={weightRef} type="number" placeholder="Weight in kg" />
-          <h1>{sexSelect}</h1>
           <select name="sexes" id="sexes" value={sexSelect} onChange={(e) => setSexSelect(e.target.value)}>
+            <option>Pick a gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
           </select>
           <select name="gain_or_lose" id="gain_or_lose" value={goalSelect} onChange={(e) => setGoalSelect(e.target.value)}>
+            <option>Pick a goal</option>
             <option value="gain">Gain weight</option>
             <option value="lose">Lose weight</option>
             <option value="keep">Keep weight</option>
