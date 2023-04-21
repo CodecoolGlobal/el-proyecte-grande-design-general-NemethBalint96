@@ -31,12 +31,12 @@ export default function DefaultLayout() {
     <div id="defaultLayout">
       <aside>
         <Link to="/dashboard">Dashboard</Link>
-        <Link to="/users">Users</Link>
+        <Link to="/users">Profile</Link>
       </aside>
       <div className="content">
         <header>
           <div>
-            Header
+            Calorie Helper
           </div>
           <div>
             {user.name}
