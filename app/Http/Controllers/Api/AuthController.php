@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+
+    public function index()
+    {
+        $user = auth()->user();
+        return response(compact('user'));
+    }
+
     public function signup(SignupRequest $request)
     {
         /** @var \App\Models\User $user */
@@ -24,6 +31,7 @@ class AuthController extends Controller
             'height' => $data['height'],
             'weight' => $data['weight'],
             'sex' => $data['sex'],
+            'gain_or_lose' => $data['gain_or_lose'],
         ]);
 
         $token = $user->createToken('main')->plainTextToken;

@@ -35,7 +35,8 @@ class SignupRequest extends FormRequest
             'age' => 'required|integer|max:120',
             'weight' => 'required|integer',
             'height' => 'required|integer|max:272',
-            'sex' => 'required|string'
+            'sex' => 'required|string',
+            'gain_or_lose' => 'required',
         ];
     }
 }
