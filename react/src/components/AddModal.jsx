@@ -1,75 +1,83 @@
-import SearchBar from "./SearchBar.jsx";
 import React, {useEffect, useState} from "react";
-import PieChart from "./PieChart.jsx";
+import SearchBar from "./SearchBar.jsx";
+import Charts from "./Charts.jsx";
 
-export default function AddModal({ open, toggleModal, actual, setActual }) {
+export default function AddModal({ open, toggleModal, actual, setActual, goal }) {
   if (!open) return null;
-  const [first, setFirst] = useState(true);
-  const [amountReference, setAmountReference] = useState();
   const [ingredient, setIngredient] = useState();
-  const [title, setTitle] = useState('Search for an ingredient');
   const [amount, setAmount] = useState(100);
+  const [preView, setPreView] = useState({...actual});
 
   useEffect(() => {
     if (!ingredient) return;
-    if (first) {
-      setFirst(false);
-      setAmountReference({...ingredient});
-    }
-    let title = ingredient.name.charAt(0).toUpperCase() + ingredient.name.slice(1);
-    setTitle(title);
+    setPreView(getMetaData());
   }, [ingredient]);
 
   const addIngredient = () => {
-    let nutrients = ingredient.nutrition.nutrients;
-    let p = nutrients.find(nutrient => nutrient.name === "Protein").amount;
-    let f = nutrients.find(nutrient => nutrient.name === "Fat").amount;
-    let nc = nutrients.find(nutrient => nutrient.name === "Net Carbohydrates").amount;
-    let k = nutrients.find(nutrient => nutrient.name === "Calories").amount;
-    let tc = nutrients.find(nutrient => nutrient.name === "Carbohydrates").amount;
-    let fi = nutrients.find(nutrient => nutrient.name === "Fiber").amount;
-    let data = {
-      "protein": actual.protein + changeAmount(p),
-      "fat": actual.fat + changeAmount(f),
-      "netCarbs": actual.netCarbs + changeAmount(nc),
-      "cals": actual.cals + changeAmount(k),
-      "totalCarbs": actual.totalCarbs + changeAmount(tc),
-      "fiber": actual.fiber + changeAmount(fi),
-    };
-    setActual(data);
+    setActual(preView);
+    setPreView(null);
     setIngredient(null);
     toggleModal();
   }
 
-  const changeAmount = (value) => {
-    let change = amountReference.amount / amount;
+  const changeAmount = (value, amount) => {
+    let change = ingredient.amount / amount;
     return value / change;
+  }
+
+  const getMetaData = () => {
+    const nutrients = ingredient.nutrition.nutrients;
+    const protein = nutrients.find(nutrient => nutrient.name === "Protein");
+    const fat = nutrients.find(nutrient => nutrient.name === "Fat");
+    const netCarbs = nutrients.find(nutrient => nutrient.name === "Net Carbohydrates");
+    const cals = nutrients.find(nutrient => nutrient.name === "Calories");
+    const totalCarbs = nutrients.find(nutrient => nutrient.name === "Carbohydrates");
+    const fiber = nutrients.find(nutrient => nutrient.name === "Fiber");
+
+    return {
+      "protein": protein ? protein.amount : 0,
+      "fat": fat ? fat.amount : 0,
+      "netCarbs": netCarbs ? netCarbs.amount : 0,
+      "cals": cals ? cals.amount : 0,
+      "totalCarbs": totalCarbs ? totalCarbs.amount : 0,
+      "fiber": fiber ? fiber.amount : 0,
+    };
   }
 
   const changeIngredientAmount = (e) => {
     let value = e.target.value < 1 ? 1 : e.target.value;
+    const m = getMetaData();
+    let combined = {};
+    for (let prop in m) {
+        combined[prop] = actual[prop] + changeAmount(m[prop], value);
+    }
+
+    setPreView(combined)
     setAmount(value);
   }
 
   return (
-    <div className={"fixed inset-0 z-10 overflow-y-auto"}>
+    <div className={"fixed inset-0 z-10 overflow-y-auto bg-gray-500 bg-opacity-75"}>
       <div className={"flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"}>
-        <div className={"relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"}>
+        <div className={"relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl"}>
           <div className={"bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4"}>
             <div className={"sm:flex sm:items-start"}>
-              <div className={"mx-auto flex h-12 w-12  items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10"}>
-                {ingredient ? <img src={"https://spoonacular.com/cdn/ingredients_100x100/" + ingredient.image} alt={ingredient.name}></img> : null}
-              </div>
+              {ingredient ?
+                <div className={"mx-auto flex h-12 w-12  items-center justify-center rounded-full sm:mx-7 sm:my-3 sm:h-10 sm:w-10"}>
+                  <img src={"https://spoonacular.com/cdn/ingredients_100x100/" + ingredient.image} alt={ingredient.name}></img>
+                </div>
+                :
+                null
+              }
               <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                 <div className={"text-base font-semibold leading-6 text-gray-900"}>
-                  {title}
+                  {ingredient ? ingredient.name.charAt(0).toUpperCase() + ingredient.name.slice(1) : "Search for an ingredient"}
                 </div>
                 <div className="mt-2">
                   <div className="text-sm text-gray-500">
                     {ingredient ?
                       <>
                         <input className={"w-auto mr-2"} type="number" value={amount} min={1} onChange={(e) => changeIngredientAmount(e)}></input>g
-                        <PieChart protein={ingredient.nutrition.caloricBreakdown.percentProtein} fat={ingredient.nutrition.caloricBreakdown.percentFat} carbs={ingredient.nutrition.caloricBreakdown.percentCarbs} />
                       </>
                       :
                       <SearchBar setIngredient={setIngredient}/>
@@ -78,6 +86,7 @@ export default function AddModal({ open, toggleModal, actual, setActual }) {
                 </div>
               </div>
             </div>
+            {ingredient ? <Charts actual={preView} goal={goal}/> : null}
           </div>
           <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
             <button
